@@ -8,11 +8,13 @@ import {Base64} from "js-base64";
  */
 export const site = (): SiteInfo => {
     return {
+        _id: useSiteStore()._id,
         state: useSiteStore().state,
         name: useSiteStore().name,
         url: useSiteStore().url,
         username: useSiteStore().username,
         password: useSiteStore().password,
+        health: useSiteStore().health
     }
 }
 /**

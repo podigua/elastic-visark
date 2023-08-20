@@ -107,9 +107,7 @@ onMounted(() => {
             </template>
           </el-table-column>
           <el-table-column align="center" prop="action" label="操作" width="60px">
-            <template v-slot="scope">
 
-            </template>
           </el-table-column>
         </el-table>
         <div class="pagination">

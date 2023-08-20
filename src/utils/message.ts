@@ -1,4 +1,4 @@
-import {ElMessage, ElMessageBox, MessageBoxData} from "element-plus"
+import {ElMessage, ElMessageBox} from "element-plus"
 
 export const success = (message: string) => {
     ElMessage({
@@ -12,6 +12,6 @@ export const error = (message: any) => {
         type: "error"
     })
 }
-export const confirm = (title: string, message: string): Promise<MessageBoxData> => {
+export const confirm = (title: string, message: string): Promise<any> => {
     return ElMessageBox.confirm(message, title);
 }
