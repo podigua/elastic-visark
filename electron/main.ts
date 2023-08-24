@@ -20,6 +20,8 @@ let window: BrowserWindow | null
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 import "./notification.ts"
 import "./datastrore/index.ts"
+import contextMenu from "electron-context-menu"
+
 function createWindow() {
     window = new BrowserWindow({
         icon: path.join(process.env.PUBLIC, 'electron-vite.svg'),
@@ -49,6 +51,31 @@ app.on('before-quit', () => {
     return willQuitApp = true;
 });
 app.whenReady().then(() => {
+    contextMenu({
+        showSelectAll:false,
+        showSearchWithGoogle: false,
+        showServices: false,
+        showCopyLink: false,
+        showCopyImage: false,
+        showCopyVideoAddress: false,
+        showCopyImageAddress: false,
+        showInspectElement: false,
+        menu: (defaultActions, params, browserWindow) => {
+            return [{
+                label: '复制',
+                visible: params.editFlags.canCopy,
+                role: 'copy',
+            }, {
+                label: '剪切',
+                visible: params.editFlags.canCut,
+                role: 'cut',
+            }, {
+                label: '粘贴',
+                visible: params.editFlags.canPaste,
+                role: 'paste',
+            }];
+        },
+    });
     createWindow();
     window && window.on('close', (e) => {
         if (willQuitApp) {

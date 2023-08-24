@@ -23,11 +23,9 @@ const onConnect = (row: any) => {
     text: '连接中...'
   })
   useSiteStore().login(row).then(async res => {
-    console.log("res", res);
-    let version = res?.version?.number;
+    let version = res.version.number;
     if (version && version !== row.version) {
       let target = Object.assign({}, row);
-      console.log("row", row, "target", target)
       target.version = version
       window.api.elastic.update(target).then(() => {
         row.version = version;

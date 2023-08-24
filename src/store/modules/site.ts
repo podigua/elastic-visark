@@ -3,6 +3,11 @@ import {SiteInfo} from './types.ts'
 import {store} from "@/store"
 import {getLogin} from "@/api/site.ts"
 
+export type LoginResult = {
+    version: {
+        number: string
+    }
+}
 const siteStore = defineStore("app-info", {
     state: (): SiteInfo => ({
         state: false,
@@ -30,9 +35,9 @@ const siteStore = defineStore("app-info", {
         },
         async login(data: any) {
             this.app(data);
-            return new Promise((resolve, reject) => {
+            return new Promise<LoginResult>((resolve, reject) => {
                 getLogin(data).then(res => {
-                    resolve(res)
+                    resolve(<LoginResult>res)
                     this.success();
                 }).catch(err => {
                     this.$reset();

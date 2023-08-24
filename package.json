@@ -5,11 +5,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build && electron-builder",
+    "build-win": "vue-tsc && vite build && electron-builder --win",
     "preview": "vite preview"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
     "axios": "^1.4.0",
+    "clipboard": "^2.0.11",
+    "electron-context-menu": "^3.6.1",
     "element-plus": "^2.3.9",
     "js-base64": "^3.7.5",
     "moment": "^2.29.4",
@@ -18,7 +21,9 @@
     "pinia": "^2.1.6",
     "qs": "^6.11.2",
     "vue": "^3.3.0",
-    "vue-router": "^4.2.4"
+    "vue-router": "^4.2.4",
+    "vue3-json-viewer": "^2.2.2",
+    "vue3-uuid": "^1.0.0"
   },
   "devDependencies": {
     "@types/nedb": "^1.8.13",

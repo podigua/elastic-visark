@@ -41,7 +41,6 @@ const close = () => {
   emit("update:visible", false);
 }
 const save = () => {
-  console.log("form", toRaw(form))
   formRef.value?.validate(v => {
     if (v) {
       loading.value = true;
@@ -59,7 +58,6 @@ const update = () => {
     emit("success");
     close();
   }).catch((err) => {
-    console.log(err)
     error("保存失败");
   }).finally(() => {
     loading.value = false;
@@ -71,7 +69,6 @@ const insert = () => {
     emit("success");
     close();
   }).catch((err) => {
-    console.log(err)
     error("保存失败");
   }).finally(() => {
     loading.value = false;
@@ -112,8 +109,7 @@ const insert = () => {
     <template #footer>
         <span class="dialog-footer">
           <el-button @click="close">取 消</el-button>
-          <el-button type="primary" :loading="loading" @click="save">确定</el-button
-          >
+          <el-button type="primary" :loading="loading" @click="save">确定</el-button>
         </span>
     </template>
   </el-dialog>

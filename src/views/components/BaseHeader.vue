@@ -5,11 +5,11 @@ import {useRoute} from 'vue-router'
 const route = useRoute();
 const visible = ref(false);
 import Theme from '@/theme/Theme.vue'
-import logo from '@/assets/logo.png';
 import {useSiteStore} from '@/store/modules/site.ts'
 import ElasticList from "@/views/components/ElasticList.vue";
 import Point from "@/components/Point.vue";
-
+import { useDark } from "@vueuse/core";
+const dark = useDark();
 const onConnecting = () => {
   visible.value = false;
 }
@@ -20,7 +20,7 @@ const onConnecting = () => {
   <div class="container">
     <div class="left">
       <div class="logo">
-        <img :src="logo" width="40" height="40"/>
+        <svg-icon icon-class="icon-logo" size="40px" :color="dark?'white':''"></svg-icon>
       </div>
       <div>
         <el-popover :visible="visible" :width="630" placement="bottom">
@@ -63,7 +63,6 @@ const onConnecting = () => {
             <el-menu-item index="/index">索引</el-menu-item>
             <el-menu-item index="/search">搜索</el-menu-item>
             <el-menu-item index="/rest">REST</el-menu-item>
-            <el-menu-item index="/snapshot">快照</el-menu-item>
           </el-menu>
         </template>
       </div>
