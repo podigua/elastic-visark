@@ -14,6 +14,10 @@ const onConnecting = () => {
   visible.value = false;
 }
 
+const openGitee = () => {
+  window.api.open("https://gitee.com/podigua/elastic-visark")
+}
+
 </script>
 
 <template>
@@ -68,6 +72,7 @@ const onConnecting = () => {
       </div>
       <div style="display: flex;justify-content: flex-start">
         <Theme></Theme>
+        <svg-icon style="margin-left: 20px;cursor: pointer;" @click="openGitee" icon-class="icon-gitee"  :color="dark?'white':''"></svg-icon>
       </div>
     </div>
   </div>

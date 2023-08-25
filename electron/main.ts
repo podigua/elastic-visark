@@ -20,6 +20,7 @@ let window: BrowserWindow | null
 const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 import "./notification.ts"
 import "./datastrore/index.ts"
+import "./shell.ts"
 import contextMenu from "electron-context-menu"
 
 function createWindow() {

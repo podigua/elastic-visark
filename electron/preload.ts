@@ -108,9 +108,9 @@ const api = {
     history: {
         insert: (value: Object) => {
             return ipcRenderer.invoke('history.insert', value);
-        }, getList: (siteId:string) :Promise<Array<Object>> => {
-            return ipcRenderer.invoke('history.getList',siteId);
-        }, deleteById: (id: string) :Promise<number> => {
+        }, getList: (siteId: string): Promise<Array<Object>> => {
+            return ipcRenderer.invoke('history.getList', siteId);
+        }, deleteById: (id: string): Promise<number> => {
             return ipcRenderer.invoke('history.deleteById', id);
         }
     },
@@ -118,6 +118,9 @@ const api = {
         show: (title: string, body: string) => {
             return ipcRenderer.invoke("notice.show", title, body);
         }
+    },
+    open: (url: string) => {
+        ipcRenderer.send('open', url);
     }
 }
 contextBridge.exposeInMainWorld('api', api)

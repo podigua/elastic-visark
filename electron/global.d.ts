@@ -13,6 +13,7 @@ export interface IElectronAPI {
         getList: (siteId:string) => Promise<any>,
         deleteById: (id: string) => Promise<number>,
     },
+    open:(url:string) =>void
 }
 
 declare global {
