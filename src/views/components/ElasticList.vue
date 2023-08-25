@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import {reactive, ref, onMounted, computed, toRaw} from 'vue';
+import {reactive, ref, onMounted, computed} from 'vue';
 import {Delete, Edit, Plus, Search} from "@element-plus/icons-vue";
 import {useSiteStore} from '@/store/modules/site.ts'
 import {ElLoading} from "element-plus";
-import {useRouter} from 'vue-router'
+import {useRouter,useRoute} from 'vue-router'
 import ElasticForm from "@/views/components/ElasticForm.vue";
 import {error, confirm, success} from "@/utils/message.ts";
 
 const isVisible = ref<boolean>(false);
 const router = useRouter();
+const route = useRoute();
 const emit = defineEmits<{
   (e: "connecting"): void;
 }>();
@@ -33,6 +34,7 @@ const onConnect = (row: any) => {
 
       })
     }
+
     await router.push("/home");
   }).catch(async err => {
     let success = await window.api.notice.show('错误信息', err.message);
