@@ -8,6 +8,11 @@ export interface IElectronAPI {
         getAll: () => Promise<any>,
         deleteById: (id: string) => Promise<*>,
     },
+    history: {
+        insert: (data: any) => Promise<any>,
+        getList: (siteId:string) => Promise<any>,
+        deleteById: (id: string) => Promise<number>,
+    },
 }
 
 declare global {

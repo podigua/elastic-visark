@@ -1,5 +1,6 @@
 import {ipcRenderer, contextBridge} from "electron";
 
+
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
     return new Promise(resolve => {
         if (condition.includes(document.readyState)) {
@@ -102,6 +103,15 @@ const api = {
             return ipcRenderer.invoke('elastic.getAll');
         }, deleteById: (id: string) => {
             return ipcRenderer.invoke('elastic.deleteById', id);
+        }
+    },
+    history: {
+        insert: (value: Object) => {
+            return ipcRenderer.invoke('history.insert', value);
+        }, getList: (siteId:string) :Promise<Array<Object>> => {
+            return ipcRenderer.invoke('history.getList',siteId);
+        }, deleteById: (id: string) :Promise<number> => {
+            return ipcRenderer.invoke('history.deleteById', id);
         }
     },
     notice: {

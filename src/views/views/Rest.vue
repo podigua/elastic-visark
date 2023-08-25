@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import {reactive, ref, watch} from "vue";
+import {reactive, ref, watch, onMounted, nextTick} from "vue";
 import {rest} from "@/views/api/elastic.ts"
 import {error} from "@/utils/message.ts";
+import {useSiteStore} from "@/store/modules/site.ts"
+import {History} from "@/views/types/history.ts";
+import RestHistory from "@/views/components/RestHistory.vue";
 
+const isRecord = ref(true);
 const right = ref(true);
-const format = ref(true);
+const drawer = ref(false);
 const loading = ref(false);
 const result = reactive({});
+const histories = reactive<Array<History>>([]);
 const form = reactive({
   url: "/index/_search",
   method: "post",
@@ -17,26 +22,16 @@ watch(form, () => {
   if (form.url && form.url) {
     right.value = true;
   }
-}, {deep: true});
-watch(() => form.body, (value) => {
-  if (format.value) {
-    formatBody(value);
-  }
+  isRecord.value = true;
 }, {deep: true});
 
-watch(format, (value) => {
-  if (value) {
-    formatBody(form.body);
-  }
-})
-
-const formatBody = (value) => {
-  if (value) {
-    try {
-      let body = JSON.stringify(JSON.parse(value), null, 2)
-      form.body = body;
-    } catch (e) {
-    }
+const formatBody = () => {
+  try {
+    let body = JSON.stringify(JSON.parse(form.body), null, 2)
+    form.body = body;
+  } catch (e) {
+    console.log(e)
+    error(e);
   }
 }
 const execute = () => {
@@ -46,19 +41,61 @@ const execute = () => {
   loading.value = true;
   rest(form.method, form.url, form.body).then(res => {
     Object.assign(result, res);
+    insertHistory();
   }).catch((err) => {
     error(err.message);
-    if(err?.response?.data){
+    if (err?.response?.data) {
       Object.assign(result, err?.response?.data);
     }
   }).finally(() => {
     loading.value = false;
   })
 }
+const insertHistory = () => {
+  if (isRecord.value) {
+    window.api.history.insert(({
+      siteId: useSiteStore()._id,
+      method: form.method,
+      url: form.url,
+      body: form.body,
+      time: new Date().getTime()
+    })).then(res => {
+      isRecord.value = false;
+      histories.splice(0, 0, res);
+      console.log("histories", histories)
+    })
+  }
+}
+const onSelectHistory = (row: History) => {
+  form.method = row.method;
+  form.body = row.body;
+  form.url = row.url;
+  nextTick(() => {
+    isRecord.value = false;
+    drawer.value = false;
+  })
+}
+const onDeleteHistory = (id) => {
+  let index = histories.findIndex(data => data._id === id);
+  if (index > -1) {
+    histories.splice(index, 1);
+  }
+}
+onMounted(() => {
+  window.api.history.getList(useSiteStore()._id).then(res => {
+    console.log("getList", res)
+    if (res && res.length > 0) {
+      histories.push(...res);
+    }
+  })
+})
 </script>
 
 <template>
   <div class="container">
+    <el-drawer v-model="drawer" size="35%" title="历史记录">
+      <RestHistory v-model:list="histories" @success="onSelectHistory" @on-delete="onDeleteHistory"></RestHistory>
+    </el-drawer>
     <el-row :gutter="10">
       <el-col :span="5">
         <el-form ref="formRef" :model="form" label-width="5px">
@@ -87,9 +124,14 @@ const execute = () => {
             </el-col>
           </el-row>
         </el-form>
-        <div style="text-align: right">
-          <el-checkbox style="margin-right: 5px;" v-model="format">格式化</el-checkbox>
-          <el-button type="primary" :disabled="!right" :loading="loading" @click="execute">执行</el-button>
+        <div style="display: flex;justify-content: space-between">
+          <div>
+            <el-button type="text" @click="drawer=true">历史记录</el-button>
+          </div>
+          <div>
+            <el-button type="primary" :disabled="!form.body"  @click="formatBody">格式化</el-button>
+            <el-button type="primary" :disabled="!right" :loading="loading" @click="execute">执行</el-button>
+          </div>
         </div>
       </el-col>
       <el-col :span="19">
