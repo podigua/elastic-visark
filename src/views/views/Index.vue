@@ -195,7 +195,7 @@ onMounted(() => {
       <div v-loading="loading">
         <el-table :data="rows" border stripe height="calc(100vh - 240px)">
           <el-table-column header-align="center" prop="index" label="名称" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="health" label="监控状态" width="120px" show-overflow-tooltip>
+          <el-table-column align="center" prop="health" label="健康状态" width="120px" show-overflow-tooltip>
             <template v-slot="scope">
               <div style="display: flex;align-items: center;justify-content: flex-start">
                 <Point :color="scope.row.health"></Point>
