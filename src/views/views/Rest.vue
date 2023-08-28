@@ -7,7 +7,6 @@ import {History} from "@/views/types/history.ts";
 import RestHistory from "@/views/components/RestHistory.vue";
 
 const isRecord = ref(true);
-const right = ref(true);
 const drawer = ref(false);
 const loading = ref(false);
 const result = reactive({});
@@ -16,12 +15,8 @@ const form = reactive({
   url: "/index/_search",
   method: "post",
   body: "",
-  right: false,
 })
 watch(form, () => {
-  if (form.url && form.url) {
-    right.value = true;
-  }
   isRecord.value = true;
 }, {deep: true});
 
@@ -130,7 +125,7 @@ onMounted(() => {
           </div>
           <div>
             <el-button type="primary" :disabled="!form.body"  @click="formatBody">格式化</el-button>
-            <el-button type="primary" :disabled="!right" :loading="loading" @click="execute">执行</el-button>
+            <el-button type="primary" :disabled="!form.url" :loading="loading" @click="execute">执行</el-button>
           </div>
         </div>
       </el-col>
