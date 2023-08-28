@@ -62,7 +62,7 @@ onMounted(() => {
       <div v-loading="loading">
         <el-table :data="list" border stripe>
           <el-table-column header-align="center" prop="name" label="名称" width="150px" show-overflow-tooltip></el-table-column>
-          <el-table-column header-align="center" prop="http_address" label="地址" width="120px" show-overflow-tooltip></el-table-column>
+          <el-table-column header-align="center" prop="http_address" label="地址" width="150px" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="version" label="版本" width="100px" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="master" label="主节点" width="100px" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="node.role" label="节点角色" width="100px" show-overflow-tooltip></el-table-column>
