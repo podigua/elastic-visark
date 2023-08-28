@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, reactive, toRaw, watch} from "vue"
+import {ref, onMounted, reactive, toRaw, watch,onActivated} from "vue"
 import {useRoute} from "vue-router"
 import {info, simpleIndices, searchByIndex} from "@/views/api/elastic.ts"
 import {error} from "@/utils/message.ts";
@@ -45,7 +45,7 @@ const indices = reactive([]);
 const fields = reactive([]);
 const isShowQuery = ref(false);
 const isShowError = ref(false);
-onMounted(() => {
+onActivated(() => {
   buildConditions();
   simpleIndices().then(data => {
     if (data && data.length > 0) {
@@ -61,29 +61,16 @@ onMounted(() => {
         let target = b["index"];
         return source.localeCompare(target);
       });
-      let filters: Array<Object> = sorts.map(data => {
+      let filters: Array<Object> = sorts.filter(data=>data["status"] === 'open').map(data => {
         return {
           label: data["index"],
           value: data["index"],
           count: data["docs.count"],
           status: data["status"],
-          disabled: data["status"] != 'open' || data["docs.count"] == 0,
           health: data["health"],
         }
       })
-      let groups = [
-        {
-          value: "available",
-          label: "可用",
-          options: filters.filter(data => !data["disabled"]),
-        },
-        {
-          value: "disabled",
-          label: "不可用",
-          options: filters.filter(data => data["disabled"]),
-        }
-      ];
-      indices.push(...groups);
+      indices.push(...filters);
     }
   })
   let defaultIndex: string = <string>route?.query?.index;

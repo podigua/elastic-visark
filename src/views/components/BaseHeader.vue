@@ -70,7 +70,7 @@ const openGitee = () => {
           </el-menu>
         </template>
       </div>
-      <div style="display: flex;justify-content: flex-start">
+      <div style="display: flex;justify-content: flex-start;align-items: center;">
         <Theme></Theme>
         <svg-icon style="margin-left: 20px;cursor: pointer;" @click="openGitee" icon-class="icon-gitee"  :color="dark?'white':''"></svg-icon>
       </div>
