@@ -66,7 +66,7 @@ onMounted(() => {
           <el-table-column align="center" prop="version" label="版本" width="100px" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="master" label="主节点" width="100px" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="node.role" label="节点角色" width="100px" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="load" label="负载(1m/5m1/5m)" width="200px">
+          <el-table-column align="center" prop="load" label="负载(1m/5m/15m)" width="200px">
             <template v-slot="scope">
               <span>{{ scope.row.load_1m + '/' + scope.row.load_5m + "/" + scope.row.load_15m }}</span>
             </template>
