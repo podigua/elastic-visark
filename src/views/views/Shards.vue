@@ -78,9 +78,9 @@ const buildPage = () => {
   let start = (page.pageNum - 1) * page.pageSize;
   let end = page.pageNum * page.pageSize;
   if (filterText.value) {
-    let result = toRaw(list).filter(data => data.index.toLowerCase().indexOf(filterText.value.toLowerCase()) > -1).slice(start, end);
+    let result = toRaw(list).filter(data => data.index.toLowerCase().indexOf(filterText.value.toLowerCase()) > -1);
     page.total = result.length;
-    rows.push(...result);
+    rows.push(...result.slice(start, end));
   } else {
     page.total = list.length;
     rows.push(...toRaw(list).slice(start, end));

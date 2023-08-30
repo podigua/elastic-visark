@@ -17,20 +17,27 @@
     "darkModeSupport" : false ,
     "artifactName" : "${productName}_${version}.${ext}" ,
     "target" : [
-      "dmg"
+      "dmg","pkg"
     ]
   } ,
   "win" : {
     "icon": "build/icons/icon.ico",
     "target": [{
-      "target": "nsis", "arch": ["x64", "ia32"]
+      "target": "nsis", "arch": ["x64", "ia32","arm64"]
+    },{
+      "target": "zip", "arch": ["x64", "ia32","arm64"]
     }],
-    "artifactName" : "${productName}_${version}.${ext}"
+    "artifactName" : "${productName}_${version}_${os}_${arch}.${ext}"
   } ,
-  "nsis" : {
-    "oneClick" : false ,
-    "perMachine" : false ,
-    "allowToChangeInstallationDirectory" : true ,
-    "deleteAppDataOnUninstall" : false
+  "nsis": {
+    "oneClick": false,
+    "allowElevation": true,
+    "allowToChangeInstallationDirectory": true,
+    "installerIcon": "build/icons/icon.ico",
+    "uninstallerIcon": "build/icons/uninstaller.ico",
+    "installerHeaderIcon": "build/icons/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "elastic-visark",
   }
 }
