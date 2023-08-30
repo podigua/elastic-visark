@@ -3,6 +3,11 @@
 1. `elastic visark`是一款基于`Vue3`,`Vite`,`electron`开发的一款`es`软件
 2. `elastic visark`提供`es`的`健康`,`节点`,`分片`,`索引`,`搜索`,`REST`功能;
 
+# 下载地址
+
+链接: https://pan.baidu.com/s/1ztZ4qPcKrUtzfEPspnudqQ?pwd=8brx 提取码: 8brx
+
+
 [使用说明](https://gitee.com/podigua/elastic-visark/wikis/)
 
 ## 快速启动
