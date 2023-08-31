@@ -31,3 +31,13 @@ pnpm build-mac
 # 打包win和mac平台
 pnpm build-all
 ```
+
+## 贡献与支持
+
+您可以通过下面的方法来贡献和支持该项目：
+
+1. 在 Gitee 上为项目加注星标
+2. 给予反馈
+3. 提交PR
+4. 贡献您的想法建议
+5. 与您的朋友同事分享 elastic-visark
