@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, reactive, toRaw, watch,onActivated} from "vue"
+import {ref, reactive, toRaw, watch, onActivated} from "vue"
 import {useRoute} from "vue-router"
 import {info, simpleIndices, searchByIndex} from "@/views/api/elastic.ts"
 import {error} from "@/utils/message.ts";
@@ -7,8 +7,10 @@ import Conditions from "@/views/components/Conditions.vue";
 import Fields from "@/views/components/Fields.vue";
 import Agg from "@/views/components/Agg.vue";
 import JsonView from "@/components/JsonView.vue";
-import {Search} from "@element-plus/icons-vue";
+import {Download, Search} from "@element-plus/icons-vue";
 import Point from "@/components/Point.vue";
+import FilterColumns from "@/views/components/FilterColumns.vue";
+import JsonText from "@/components/JsonText.vue";
 
 const sourceFields = reactive({
   "includes": [],
@@ -18,10 +20,14 @@ const route = useRoute();
 const loading = ref(false);
 const page = reactive({
   pageNum: 1,
-  pageSize: 10,
+  pageSize: 15,
   total: 0
 });
+const isShowCurrentRow = ref(false);
+const isDownloading = ref(false);
+const isShowSelectColumn = ref(false);
 const conditions = reactive({});
+const currentRow = reactive({});
 const errors = reactive({});
 const rows = ref([]);
 const aggregations = reactive({});
@@ -36,10 +42,13 @@ watch(() => form.index, () => {
   Object.keys(result).forEach(key => {
     delete result[key];
   })
+  columns.splice(0, columns.length);
+  filterColumns.splice(0, columns.length);
   rows.value.splice(0, rows.value.length);
   page.total = 0;
 })
 const columns = reactive([]);
+const filterColumns = reactive([]);
 const query = reactive({});
 const indices = reactive([]);
 const fields = reactive([]);
@@ -61,7 +70,7 @@ onActivated(() => {
         let target = b["index"];
         return source.localeCompare(target);
       });
-      let filters: Array<Object> = sorts.filter(data=>data["status"] === 'open').map(data => {
+      let filters: Array<Object> = sorts.filter(data => data["status"] === 'open').map(data => {
         return {
           label: data["index"],
           value: data["index"],
@@ -103,7 +112,18 @@ const buildConditions = () => {
     }
   }
 }
+const onColumnChange = (values) => {
+  filterColumns.splice(0, filterColumns.length);
+  values.forEach(column => {
+    filterColumns.push({
+      align: "center",
+      label: column,
+      prop: column,
+      width: 180,
+    })
+  })
 
+}
 const getFields = (index) => {
   fields.splice(0, fields.length);
   if (!index) {
@@ -121,7 +141,7 @@ const getFields = (index) => {
         }
       })
       let array = Array.from(set);
-      let sorts = array.sort((a:string, b:string) => a.localeCompare(b));
+      let sorts = array.sort((a: string, b: string) => a.localeCompare(b));
       fields.push(...sorts.map(data => {
         return {
           label: data, value: data
@@ -180,26 +200,40 @@ const search = () => {
     if (form.simple) {
       page.total = res.hits?.total?.value;
       columns.splice(0, columns.length);
+      let set = new Set<string>();
       let list = res.hits?.hits;
       if (list && list.length > 0) {
+        let start = new Date().getTime();
         list.forEach((item, index) => {
-
           let row = item._source;
           Object.keys(row).forEach(key => {
-            let node = columns.find(data => data.key === key);
-            if (!node) {
-              columns.push({
-                align: "center",
-                title: key,
-                prop: key,
-                key: key,
-                dataKey: key,
-                width: 150,
-              })
-            }
+            set.add(key);
           })
+          row["__source"] = JSON.parse(JSON.stringify(item));
           rows.value.push(row);
         })
+        let array = Array.from(set);
+        let sorts = array.sort((a, b) => a.localeCompare(b));
+        if (filterColumns.length === 0) {
+          sorts.forEach(value => {
+            filterColumns.push({
+              align: "center",
+              label: value,
+              prop: value,
+              width: 180,
+            })
+          })
+        }
+        sorts.forEach(value => {
+          columns.push({
+            align: "center",
+            label: value,
+            prop: value,
+            width: 180,
+          })
+        })
+        let end = new Date().getTime();
+        console.log("耗时:", (end - start));
       }
     }
   }).catch((err) => {
@@ -217,10 +251,45 @@ const search = () => {
     loading.value = false;
   })
 }
+const onRowdblClick = (row) => {
+  if (row && row["__source"]) {
+    let start = new Date().getTime();
+    isShowCurrentRow.value = true;
+    Object.keys(currentRow).forEach(key => {
+      delete currentRow[key];
+    })
+    Object.assign(currentRow, row["__source"])
+    let end = new Date().getTime();
+    console.log("show row over", (end - start));
+  }
+}
+const downloadExcel = () => {
+  let headers = columns.map(column => column.prop);
+  let list = toRaw(rows.value);
+  let filename = `${form.index}-${new Date().getTime()}.xlsx`;
+  isDownloading.value = true;
+  window.api.openSaveFolder(filename).then(res => {
+    let canceled = res.canceled
+    if (!canceled) {
+      window.api.export.excel(res.filePath, '', headers, list).then(res => {
+        console.log("下载完成", res);
+      }).catch(err => {
+        console.log("下载失败", err);
+      }).finally(() => {
+        isDownloading.value = false;
+      })
+    } else {
+      isDownloading.value = false;
+    }
+  }).catch(() => {
+    isDownloading.value = false;
+  })
+}
 </script>
 
 <template>
   <div>
+    <JsonView v-if="isShowCurrentRow" v-model="currentRow" v-model:visible="isShowCurrentRow"></JsonView>
     <JsonView v-if="isShowQuery" v-model:visible="isShowQuery" title="查询条件" v-model="conditions"></JsonView>
     <JsonView v-if="isShowError" v-model:visible="isShowError" title="错误信息" v-model="errors"></JsonView>
     <div style="display: flex;justify-content: space-between">
@@ -277,26 +346,28 @@ const search = () => {
         <Agg :fields="fields" @change="onAggChange"></Agg>
       </el-tab-pane>
     </el-tabs>
-    <el-tabs v-loading="loading">
+    <el-tabs>
       <el-tab-pane label="表格" v-if="form.simple">
-        <div style="height:500px">
+        <div style="display:flex;justify-content: flex-end;margin: 5px">
+          <FilterColumns :visible="isShowSelectColumn" :columns="columns" :filter-columns="filterColumns" :disabled="Object.keys(filterColumns).length===0" @change="onColumnChange"></FilterColumns>
+          <el-button type="text" :loading="isDownloading" :icon="Download" :disabled="Object.keys(result).length===0" @click="downloadExcel"></el-button>
+        </div>
+        <div style="height:520px">
           <el-auto-resizer>
             <template #default="{ height, width }">
-              <el-table-v2
-                  :columns="columns"
-                  :data="rows"
-                  :width="width"
-                  :height="height"
-                  fixed
-              >
-              </el-table-v2>
+              <el-table :data="rows" :height="height" border stripe table-layout="auto" highlight-current-row @row-dblclick="onRowdblClick" v-loading="loading">
+                <el-table-column type="index" width="50px" align="center" v-if="Object.keys(filterColumns).length!==0"/>
+                <template v-for="column in filterColumns">
+                  <el-table-column sortable :prop="column.prop" :label="column.label" :min-width="column.width" :align="column.align" show-overflow-tooltip/>
+                </template>
+              </el-table>
             </template>
           </el-auto-resizer>
         </div>
         <div class="pagination">
           <el-pagination
               :current-page="page.pageNum"
-              :page-sizes="[10, 15, 20, 50, 100,200,500]"
+              :page-sizes="[10, 15, 20, 50, 100,200,300]"
               :page-size="page.pageSize"
               layout="total, sizes, prev, pager, next"
               :total="page.total"
@@ -307,8 +378,8 @@ const search = () => {
         </div>
       </el-tab-pane>
       <el-tab-pane label="JSON">
-        <div style="height: 500px;overflow: auto;;border: solid 1px var(--el-border-color)">
-          <json-viewer :value="result" preview-mode copyable :show-double-quotes="true" theme="jv-light"></json-viewer>
+        <div style="height: 500px;overflow: auto;padding: 2px;border: solid 1px var(--el-border-color);" v-loading="loading">
+          <JsonText :value="result"></JsonText>
         </div>
       </el-tab-pane>
     </el-tabs>

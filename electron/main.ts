@@ -21,6 +21,9 @@ const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL']
 import "./notification.ts"
 import "./datastrore/index.ts"
 import "./shell.ts"
+import "./export.js"
+import "./clipboard.ts"
+import {setDialogWindow} from "./dialog.js"
 import contextMenu from "electron-context-menu"
 
 function createWindow() {
@@ -36,6 +39,7 @@ function createWindow() {
         window?.webContents.send('main-process-message', (new Date).toLocaleString())
     })
     window.maximize();
+    setDialogWindow(window);
     if (VITE_DEV_SERVER_URL) {
         window.loadURL(VITE_DEV_SERVER_URL)
     } else {
@@ -53,7 +57,7 @@ app.on('before-quit', () => {
 });
 app.whenReady().then(() => {
     contextMenu({
-        showSelectAll:false,
+        showSelectAll: false,
         showSearchWithGoogle: false,
         showServices: false,
         showCopyLink: false,

@@ -27,26 +27,11 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 
 setupStore(app);
-import {JsonViewer} from "vue3-json-viewer";
 // if you used v1.0.5 or latster ,you should add import "vue3-json-viewer/dist/index.css"
-import "vue3-json-viewer/dist/index.css";
-
-app.component("json-viewer", JsonViewer);
 app.use(router);
 app.use(UUID);
+import {heightLine} from "./directive/heightline.ts"
 
-
-import Home from "@/views/views/Home.vue"
-import Node from "@/views/views/Node.vue"
-import Index from "@/views/views/Index.vue"
-import Search from "@/views/views/Search.vue"
-import Shards from "@/views/views/Shards.vue"
-import Rest from "@/views/views/Rest.vue"
-app.component(Home,Home);
-app.component(Node,Node);
-app.component(Index,Index);
-app.component(Search,Search);
-app.component(Shards,Shards);
-app.component(Rest,Rest);
+app.directive("height-line", heightLine);
 app.use(ElementPlus, {size: 'small', locale: zhCn});
 app.mount('#app').$nextTick(() => postMessage({payload: 'removeLoading'}, '*'))

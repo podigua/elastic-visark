@@ -5,6 +5,7 @@ import {error} from "@/utils/message.ts";
 import {useSiteStore} from "@/store/modules/site.ts"
 import {History} from "@/views/types/history.ts";
 import RestHistory from "@/views/components/RestHistory.vue";
+import JsonText from "@/components/JsonText.vue";
 
 const isRecord = ref(true);
 const drawer = ref(false);
@@ -130,8 +131,8 @@ onMounted(() => {
         </div>
       </el-col>
       <el-col :span="19">
-        <div v-loading="loading" style="height: calc(100vh - 80px);overflow: auto;;border: solid 1px var(--el-border-color)">
-          <json-viewer :value="result" preview-mode copyable :show-double-quotes="true" theme="jv-light"></json-viewer>
+        <div v-loading="loading" style="height: calc(100vh - 80px);overflow: auto;padding: 2px;border: solid 1px var(--el-border-color)">
+          <JsonText :value="result"></JsonText>
         </div>
       </el-col>
     </el-row>

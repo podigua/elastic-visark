@@ -1,4 +1,4 @@
-import {ipcRenderer, contextBridge} from "electron";
+import {ipcRenderer, contextBridge, clipboard} from "electron";
 
 
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
@@ -121,6 +121,20 @@ const api = {
     },
     open: (url: string) => {
         ipcRenderer.send('open', url);
+    },
+    openSaveFolder: (name) => {
+        return ipcRenderer.invoke('select.save.folder', name);
+    },
+    export: {
+        excel: (filePath, filename, columns, list) => {
+            return ipcRenderer.invoke('export.excel', filePath, filename, columns, list);
+        },
+        text: (filePath, filename, text) => {
+            return ipcRenderer.invoke('export.text', filePath, filename, text);
+        }
+    },
+    copy: (text: string) => {
+        ipcRenderer.send('copy', text);
     }
 }
 contextBridge.exposeInMainWorld('api', api)

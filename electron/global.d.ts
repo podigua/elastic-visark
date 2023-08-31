@@ -10,10 +10,16 @@ export interface IElectronAPI {
     },
     history: {
         insert: (data: any) => Promise<any>,
-        getList: (siteId:string) => Promise<any>,
+        getList: (siteId: string) => Promise<any>,
         deleteById: (id: string) => Promise<number>,
     },
-    open:(url:string) =>void
+    open: (url: string) => void,
+    openSaveFolder: (name: string) => Promise<any>,
+    export: {
+        excel: (path: string, filename: string, columns: string[], list: any) => Promise<any>
+        text: (path: string, filename: string, text: string) => Promise<any>
+    },
+    copy: (text: string) => void,
 }
 
 declare global {
