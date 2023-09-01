@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {value, toggle} from './dark.ts';
+import {Moon, Sunny} from "@element-plus/icons-vue";
 const change = () => {
   toggle();
 }
@@ -7,8 +8,8 @@ const change = () => {
 
 <template>
   <div class="svg-icon" @click="change">
-    <svg-icon v-if="value" icon-class="icon-moon" color="white"></svg-icon>
-    <svg-icon v-else icon-class="icon-sun" ></svg-icon>
+    <el-icon :size="20" v-if="value"><Moon /></el-icon>
+    <el-icon v-else :size="20"><Sunny /></el-icon>
   </div>
 </template>
 
