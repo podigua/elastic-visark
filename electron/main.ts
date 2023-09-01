@@ -55,6 +55,12 @@ app.on('activate', () => window && window.show());
 app.on('before-quit', () => {
     return willQuitApp = true;
 });
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.exit()
+    }
+})
 app.whenReady().then(() => {
     contextMenu({
         showSelectAll: false,
@@ -83,11 +89,13 @@ app.whenReady().then(() => {
     });
     createWindow();
     window && window.on('close', (e) => {
-        if (willQuitApp) {
-            window = null;
-        } else {
-            e.preventDefault();
-            window && window.hide();
+        if (process.platform === 'darwin') {
+            if (willQuitApp) {
+                window = null;
+            } else {
+                e.preventDefault();
+                window && window.hide();
+            }
         }
     });
 })
