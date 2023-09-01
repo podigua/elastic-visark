@@ -131,7 +131,7 @@ onMounted(() => {
         </div>
       </el-col>
       <el-col :span="19">
-        <div v-loading="loading" style="height: calc(100vh - 80px);overflow: auto;padding: 2px;border: solid 1px var(--el-border-color)">
+        <div v-loading="loading" style="height: calc(100vh - 80px);padding: 2px;border: solid 1px var(--el-border-color)">
           <JsonText :value="result"></JsonText>
         </div>
       </el-col>

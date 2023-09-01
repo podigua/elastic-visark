@@ -54,7 +54,7 @@ const download = () => {
         <el-button type="text" style="padding: 5px" :icon="Download" @click="download" :loading="isDownloading"></el-button>
       </el-button-group>
     </div>
-    <pre><div v-height-line:[backups]="filterText" ref="textRef" readonly class="json-view" v-html="text"></div></pre>
+    <pre style="height: 100%;overflow: auto;margin: 0;"><div v-height-line:[backups]="filterText" ref="textRef" readonly class="json-view" v-html="text"></div></pre>
   </div>
 </template>
 

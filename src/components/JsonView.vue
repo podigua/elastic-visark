@@ -22,7 +22,7 @@ const close = () => {
 <template>
   <div>
     <el-dialog :title="title" v-model="isVisible" @close="close" top="5%">
-      <div style="height: 500px;overflow: auto;padding: 2px;border: solid 1px var(--el-border-color)">
+      <div style="height: 500px;padding: 2px;border: solid 1px var(--el-border-color)">
         <JsonText :value="modelValue"></JsonText>
       </div>
     </el-dialog>

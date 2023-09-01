@@ -378,7 +378,7 @@ const downloadExcel = () => {
         </div>
       </el-tab-pane>
       <el-tab-pane label="JSON">
-        <div style="height: 500px;overflow: auto;padding: 2px;border: solid 1px var(--el-border-color);" v-loading="loading">
+        <div style="height: 500px;padding: 2px;border: solid 1px var(--el-border-color);" v-loading="loading">
           <JsonText :value="result"></JsonText>
         </div>
       </el-tab-pane>
